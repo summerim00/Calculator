@@ -1,0 +1,73 @@
+body {
+    /* 화면 중앙 정렬 및 배경 설정 */
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+    margin: 0;
+}
+
+.calculator {
+    /* 계산기 컨테이너 스타일 */
+    width: 300px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.display {
+    /* 계산기 디스플레이 영역 스타일 */
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.input-field, .output {
+    /* 입력 필드와 출력 스타일 설정 */
+    text-align: right;
+    font-size: 2em;
+    margin: 5px 0;
+}
+
+.buttons {
+    /* 버튼 그룹 레이아웃 설정 */
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.btn {
+    /* 버튼 기본 스타일 */
+    padding: 20px;
+    font-size: 1.2em;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #e0e0e0;
+    transition: background-color 0.2s;
+}
+
+    .btn.operator, .btn.trig, .btn.hyperbolic, .btn.misc {
+        /* 특수 버튼 스타일 */
+        background-color: #800080;
+        color: #fff;
+    }
+
+    .btn:active {
+        /* 버튼 클릭 시 스타일 */
+        background-color: #ccc;
+    }
+
+/* 특수 버튼 공통 스타일 설정 */
+button.operator, button.trig, button.hyperbolic, button.misc {
+    background-color: #800080;
+    color: #FFFFFF;
+}
+
+button:hover {
+    /* 버튼 마우스 오버 시 스타일 */
+    background-color: #8fbcd4;
+}

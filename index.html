@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<!-- 계산기 웹 애플리케이션 HTML 파일 -->
+<html lang="en">
+<head>
+    <!-- 메타데이터와 스타일 정의 -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator with History</title>
+    <!-- 계산기 타이틀 설정 -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* 인라인 CSS 스타일 정의 */
+        body {
+            /* 페이지 전반적인 레이아웃 설정 */
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+        }
+
+        .calculator-container {
+            /* 계산기와 히스토리 컨테이너 설정 */
+            display: flex;
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        .display-container {
+            /* 현재 계산식과 결과를 표시하는 영역 스타일 */
+            flex: 1;
+            background-color: #C4D1C5;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            text-align: right;
+            font-size: 2em;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-width: 1500px;
+        }
+
+        .calculator {
+            /* 계산기 버튼들이 위치하는 컨테이너 설정 */
+            width: 400px;
+            background-color: #C4D1C5;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .buttons {
+            /* 계산기 버튼 레이아웃 설정 */
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .btn {
+            /* 계산기 버튼 기본 스타일 */
+            padding: 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #e0e0e0;
+            transition: background-color 0.2s;
+        }
+
+            .btn.operator, .btn.trig, .btn.hyperbolic, .btn.misc {
+                /* 특수 버튼 스타일 (연산자, 삼각함수 등) */
+                background-color: #C99DCA;
+                color: #ffffff;
+            }
+
+                .btn:hover, .btn.operator:hover, .btn.trig:hover, .btn.hyperbolic:hover, .btn.misc:hover {
+                    /* 버튼 마우스 오버 시 스타일 */
+                    background-color: #807097;
+                }
+
+            .btn:active {
+                /* 버튼 클릭 시 스타일 */
+                background-color: #ccc;
+            }
+
+        .history {
+            /* 계산 기록을 표시하는 영역 스타일 */
+            width: 200px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 800px;
+        }
+
+            .history h3 {
+                /* 계산 기록 제목 스타일 */
+                text-align: center;
+            }
+
+        .history-list {
+            /* 계산 기록 리스트 스타일 */
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .history-item {
+            /* 계산 기록 항목 스타일 */
+            margin: 10px 0;
+            padding: 5px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .clear-history {
+            /* 계산 기록 삭제 버튼 스타일 */
+            display: block;
+            width: 90%;
+            padding: 10px;
+            margin: 10px auto;
+            font-size: 1em;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #ff6b6b;
+            color: #ffffff;
+            transition: background-color 0.2s;
+            text-align: center;
+        }
+
+            .clear-history:hover {
+                /* 계산 기록 삭제 버튼 마우스 오버 시 스타일 */
+                background-color: #e55b5b;
+            }
+
+            .clear-history:active {
+                /* 계산 기록 삭제 버튼 클릭 시 스타일 */
+                background-color: #cc4b4b;
+            }
+
+        /* 입력 필드 줄바꿈 스타일 추가 */
+        .input-field {
+            resize: none;
+            overflow: hidden;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            text-align: right;
+            font-family: Arial, sans-serif;
+            font-size: 2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- 계산기와 계산 기록 UI 구성 -->
+    <div class="calculator-container">
+        <!-- 계산기 컨테이너 시작 -->
+        <div class="display-container" style="display: flex; align-items: center;">
+            <!-- 현재 계산 값을 보여주는 입력 필드와 삭제 버튼 -->
+            <textarea id="inputField" class="input-field" disabled style="flex: 1; max-width: 700px; height: auto;"></textarea>
+            <button class="btn" onclick="deleteLast()" style="margin-left: 10px;">⌫</button>
+        </div>
+        <div class="calculator">
+            <!-- 계산기 버튼들이 위치하는 영역 -->
+            <div class="buttons">
+                <!-- 숫자, 연산자, 기능 버튼들 -->
+                <button class="btn" onclick="appendNumber('1')">1</button>
+                <button class="btn" onclick="appendNumber('2')">2</button>
+                <button class="btn" onclick="appendNumber('3')">3</button>
+                <button class="btn operator" onclick="appendOperator('/')">/</button>
+                <button class="btn" onclick="appendNumber('4')">4</button>
+                <button class="btn" onclick="appendNumber('5')">5</button>
+                <button class="btn" onclick="appendNumber('6')">6</button>
+                <button class="btn operator" onclick="appendOperator('*')">*</button>
+                <button class="btn" onclick="appendNumber('7')">7</button>
+                <button class="btn" onclick="appendNumber('8')">8</button>
+                <button class="btn" onclick="appendNumber('9')">9</button>
+                <button class="btn operator" onclick="appendOperator('-')">-</button>
+                <button class="btn" onclick="appendNumber('0')">0</button>
+                <button class="btn" onclick="appendDecimal()">.</button>
+                <button class="btn operator" onclick="appendOperator('+')">+</button>
+                <button class="btn" onclick="calculate()">=</button>
+                <button class="btn" onclick="toggleSign()">+/-</button>
+                <button class="btn" onclick="clearAll()">C</button>
+                <button class="btn operator" onclick="appendOperator('^')">^</button>
+                <button class="btn operator" onclick="appendOperator('mod')">mod</button>
+                <button class="btn trig" onclick="calculateTrigFunction('sin')">sin</button>
+                <button class="btn trig" onclick="calculateTrigFunction('cos')">cos</button>
+                <button class="btn trig" onclick="calculateTrigFunction('tan')">tan</button>
+                <button class="btn hyperbolic" onclick="calculateHyperbolicFunction('sinh')">sinh</button>
+                <button class="btn hyperbolic" onclick="calculateHyperbolicFunction('cosh')">cosh</button>
+                <button class="btn hyperbolic" onclick="calculateHyperbolicFunction('tanh')">tanh</button>
+                <button class="btn misc" onclick="calculateSquareRoot()">√</button>
+                <button class="btn misc" onclick="calculateFactorial()">n!</button>
+            </div>
+        </div>
+        <div class="history">
+            <!-- 계산 기록을 보여주는 영역 -->
+            <h3>History</h3>
+            <ul id="historyList" class="history-list"></ul>
+            <button class="clear-history" onclick="clearHistory()">Clear History</button>
+        </div>
+    </div>
+    <script src="index.js"></script>
+    <!-- 계산기의 기능을 정의하는 JavaScript 파일 -->
+</body>
+<!--
+전체적인 코드 설명:
+
+이 HTML 파일은 계산기와 계산 기록 기능을 제공하는 웹 애플리케이션을 구성합니다.
+페이지의 레이아웃은 계산기와 계산 기록을 위한 두 개의 주요 섹션으로 구성되어 있습니다.
+
+1. <head> 섹션에서는 메타데이터와 스타일이 정의되어 있으며, 계산기 UI의 스타일을 설정하는 CSS 코드가 포함되어 있습니다.
+2. <body> 섹션에서는 계산기와 히스토리 UI가 구성됩니다.
+   - 계산기 컨테이너 안에는 현재 입력 값을 표시하는 디스플레이와 여러 계산 버튼이 포함되어 있습니다.
+   - 계산 버튼에는 숫자, 기본 연산자(+,-,*,/ 등), 특수 연산자(삼각 함수, 제곱근 등) 및 기능 버튼(지우기 등)이 포함됩니다.
+   - 계산 기록(history) 섹션은 사용자가 계산한 내역을 표시하며, 'Clear History' 버튼을 눌러 기록을 삭제할 수 있습니다.
+3. <script> 태그에서는 JavaScript 파일(index.js)을 로드하여 계산기 기능을 구현합니다.
+
+이 구조를 통해 사용자는 브라우저에서 간단한 수학 계산을 수행하고, 계산 기록을 쉽게 확인하고 관리할 수 있습니다.
+-->
+</html>
